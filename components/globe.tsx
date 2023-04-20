@@ -1,28 +1,21 @@
-import React, { useRef, useEffect } from 'react';
-import ThreeScene from '../utils/threejs'
+import React, { useEffect, useRef } from 'react';
+import createGlobe from './utils/threejs';
 
-
-const GlobeScene = () => {
+const GlobeCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const globeURL = '/globe/scene.gltf'
-
 
   useEffect(() => {
     if (canvasRef.current) {
-      const threeScene = new ThreeScene(canvasRef.current);
-      threeScene.loadModel(globeURL);
-      threeScene.addLights();
-      threeScene.modifyMaterials();
-      threeScene.render();
+      createGlobe(canvasRef.current);
     }
-  }, [canvasRef]);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      style={{ width: '100%', height: '100%', display: 'block' }}
+      style={{ width: '100%', height: '100%' }}
     />
   );
-}
+};
 
-export default GlobeScene
+export default GlobeCanvas;
