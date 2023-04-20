@@ -22,13 +22,14 @@ const vertexShader = `
 
 const fragmentShader = `
   uniform vec3 glowColor;
+  uniform float alpha;
   varying vec3 vNormal;
   varying vec3 vWorldPosition;
 
   void main() {
     vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
-    float intensity = pow(1.0 - dot(vNormal, viewDirection), 6.0);
-    gl_FragColor = vec4(glowColor, 1.0) * intensity;
+    float intensity = pow(1.0 - dot(vNormal, viewDirection), 0.1);
+    gl_FragColor = vec4(glowColor, alpha) * intensity;
   }
 `;
 
@@ -41,7 +42,7 @@ const createGlobe = (canvas: HTMLCanvasElement): void => {
   renderer.setPixelRatio(window.devicePixelRatio)
 
   // Set up the globe geometry and material
-  const geometry: THREE.SphereGeometry = new THREE.SphereGeometry(5, 50, 50);
+  const geometry: THREE.SphereGeometry = new THREE.SphereGeometry(5, 100, 100);
   const texture: THREE.Texture = new THREE.TextureLoader().load(Globe.src);
   const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ map: texture });
 
@@ -60,17 +61,15 @@ const createGlobe = (canvas: HTMLCanvasElement): void => {
   scene.add(globe);
 
   // Create a mesh for the glow effect
-  const glowGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(5.5, 50, 50);
+  const glowGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(5.1, 50, 50);
   const glowMaterial: THREE.ShaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
-      c: { value: 0.5, type: 'f' },
-      p: { value: 50.0, type: 'f' },
-      glowColor: { value: new THREE.Color(0xffa500), type: 'c' },
-      viewVector: { value: camera.position.clone(), type: 'v3' },
+      glowColor: { value: new THREE.Color(0x0000A5), type: 'c' },
+      alpha: { value: 0.3, type: 'f' },
     } as UniformsType,
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
-    side: THREE.FrontSide,
+    side: THREE.BackSide, // Change this line
     blending: THREE.AdditiveBlending,
     transparent: true,
   });
