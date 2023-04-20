@@ -5,7 +5,6 @@ import Globe from '../../assets/earth.jpg';
 import MilkyWay from '../../assets/milky_way.jpg';
 import RealGlobe from '../../assets/Earth_1_12756.glb'
 
-
 interface UniformsType {
   [uniform: string]: {value: any; type: string}
 }
@@ -57,26 +56,13 @@ const loadGlobeGLB = (scene: THREE.Scene): void => {
 };
 
 
-const createGlobe = (canvas: HTMLCanvasElement): void => {
+const createGlobeScene = (camera: THREE.PerspectiveCamera, renderer: THREE.Renderer): THREE.Scene  => {
   // Set up the scene, camera, and renderer
   const scene: THREE.Scene = new THREE.Scene();
-  const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(60, canvas.width / canvas.height, 1, 1000);
-  const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({ canvas , antialias: true });
-  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-  renderer.setPixelRatio(window.devicePixelRatio)
-
 
   // Add ambient light
   const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
   scene.add(ambientLight);
-
-
-  // Set up the Milky Way texture and its position
-  const milkyWayTexture: THREE.Texture = new THREE.TextureLoader().load(MilkyWay.src);
-  milkyWayTexture.wrapS = THREE.RepeatWrapping;
-  milkyWayTexture.wrapT = THREE.RepeatWrapping;
-  milkyWayTexture.repeat.set(1, 1);
-  scene.background = milkyWayTexture;
 
   //White background for debugging
   // scene.background = new THREE.Color(0xffffff);
@@ -122,14 +108,7 @@ const createGlobe = (canvas: HTMLCanvasElement): void => {
   };
   window.addEventListener('resize', onWindowResize, false);
 
-  // Animate the globe
-  const animate = (): void => {
-    requestAnimationFrame(animate);
-    controls.update();
-
-    renderer.render(scene, camera);
-  };
-  animate();
+  return scene
 };
 
-export default createGlobe;
+export default createGlobeScene;
