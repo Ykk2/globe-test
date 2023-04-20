@@ -37,7 +37,7 @@ const createGlobe = (canvas: HTMLCanvasElement): void => {
 
 
   // Add ambient light
-  const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 2.5);
   scene.add(ambientLight);
 
 
