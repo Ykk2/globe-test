@@ -6,6 +6,37 @@ import MilkyWay from '../../assets/milky_way.jpg';
 import RealGlobe from '../../assets/Earth_1_12756.glb'
 
 
+interface UniformsType {
+  [uniform: string]: {value: any; type: string}
+}
+
+const vertexShader = `
+  varying vec3 vNormal;
+  varying vec3 vWorldPosition;
+
+  void main() {
+    vNormal = normalize(normalMatrix * normal);
+    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+    vWorldPosition = worldPosition.xyz;
+
+    gl_Position = projectionMatrix * viewMatrix * worldPosition;
+  }
+`;
+
+const fragmentShader = `
+  uniform vec3 glowColor;
+  uniform float alpha;
+  varying vec3 vNormal;
+  varying vec3 vWorldPosition;
+
+  void main() {
+    vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
+    float intensity = pow(1.0 - dot(vNormal, viewDirection), 0.1);
+    gl_FragColor = vec4(glowColor, alpha) * intensity;
+  }
+`;
+
+
 const loadGlobeGLB = (scene: THREE.Scene): void => {
   const loader: GLTFLoader = new GLTFLoader();
   loader.load(
@@ -30,7 +61,7 @@ const loadGlobeGLB = (scene: THREE.Scene): void => {
 const createGlobe = (canvas: HTMLCanvasElement): void => {
   // Set up the scene, camera, and renderer
   const scene: THREE.Scene = new THREE.Scene();
-  const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 1, 1000);
+  const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(60, canvas.width / canvas.height, 1, 1000);
   const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({ canvas , antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio)
@@ -53,6 +84,23 @@ const createGlobe = (canvas: HTMLCanvasElement): void => {
 
   // Load and display the GLB file
   loadGlobeGLB(scene);
+
+  // Create a mesh for the glow effect
+  const glowGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(2.94, 50, 50);
+  const glowMaterial: THREE.ShaderMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+      glowColor: { value: new THREE.Color(0x0000A5), type: 'c' },
+      alpha: { value: 0.27, type: 'f' },
+    } as UniformsType,
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+    side: THREE.BackSide, // Change this line
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+  });
+  const glowMesh: THREE.Mesh = new THREE.Mesh(glowGeometry, glowMaterial);
+  scene.add(glowMesh);
+
 
   // Set up orbit controls
   const controls = new OrbitControls(camera, renderer.domElement);
