@@ -42,7 +42,6 @@ const loadGlobeGLB = (scene: THREE.Scene): void => {
   loader.load(
     RealGlobe,
     (gltf: GLTF) => {
-      console.log('GLB file loaded successfully:', gltf);
       scene.add(gltf.scene);
       const box = new THREE.Box3().setFromObject(gltf.scene);
       const center = box.getCenter(new THREE.Vector3());

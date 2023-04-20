@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import createGlobe from './utils/threejs';
 
-const GlobeCanvas: React.FC = () => {
+const GlobeScene: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -18,4 +18,4 @@ const GlobeCanvas: React.FC = () => {
   );
 };
 
-export default GlobeCanvas;
+export default GlobeScene;
