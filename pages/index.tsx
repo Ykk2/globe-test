@@ -1,6 +1,5 @@
 import React from 'react'
 import GlobeScene from '@/components/globe'
-import IntroScene from '@/components/intro'
 
 
 export default function Home() {
