@@ -1,8 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import Globe from '../../assets/earth.jpg';
-import MilkyWay from '../../assets/milky_way.jpg';
 import RealGlobe from '../../assets/Earth_1_12756.glb'
 
 
